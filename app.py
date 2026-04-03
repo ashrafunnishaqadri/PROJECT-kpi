@@ -6,6 +6,7 @@ from components.dashboard import show_dashboard
 from components.predictive_analytics import show_predictive_analytics
 from components.ai_chat import show_ai_chat, show_top_insights
 from components.reports import show_reports
+from streamlit_autorefresh import st_autorefresh
 import os
 
 # --- Page configuration ---
@@ -22,6 +23,10 @@ if 'df_historical' not in st.session_state:
         st.session_state.df_historical = seed_database_if_empty()
 if 'stream_gen' not in st.session_state:
     st.session_state.stream_gen = stream_real_time_data(persist=True)
+
+# Initialize Real-Time Data Buffer
+if 'stream_data' not in st.session_state:
+    st.session_state.stream_data = st.session_state.df_historical.tail(20).to_dict('records')
 
 # --- Authentication Logic (RBAC) ---
 if 'authenticated' not in st.session_state:
@@ -95,9 +100,28 @@ else:
     # Routing
     if page == "Dashboard":
         st.title("🚀 Real-Time KPI Dashboard")
-        # Quick AI summary at the top
-        show_top_insights(st.session_state.df_historical.tail(100))
-        show_dashboard(st.session_state.df_historical, st.session_state.stream_gen)
+        
+        # 1. Trigger Refresh (every 2 seconds)
+        st_autorefresh(interval=2000, key="data_refresh")
+        
+        # 2. Fetch one new data point and update state
+        new_data = None
+        try:
+            new_data = next(st.session_state.stream_gen)
+            st.session_state.stream_data.append(new_data)
+            if len(st.session_state.stream_data) > 100:
+                st.session_state.stream_data.pop(0)
+        except Exception as e:
+            st.info("🛰️ Initializing Data Stream...")
+
+        # 3. Quick AI summary at the top
+        show_top_insights(pd.DataFrame(st.session_state.stream_data))
+        
+        # 4. Render Dashboard Frame
+        if new_data:
+            show_dashboard(pd.DataFrame(st.session_state.stream_data), new_data)
+        else:
+            st.warning("Connecting to Live Sensor...)")
     
     elif page == "Predictive Analytics":
         st.title("🔮 Predictive Insights")

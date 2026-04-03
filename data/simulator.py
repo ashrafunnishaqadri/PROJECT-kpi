@@ -131,4 +131,3 @@ def stream_real_time_data(persist=False):
             db.save_kpi_data(pd.DataFrame([data_point]))
             
         yield data_point
-        time.sleep(2) 

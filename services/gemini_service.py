@@ -24,13 +24,11 @@ class GeminiService:
                 # 1. Get ALL models available to this key
                 avail = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
                 
-                # 2. Priority List - We try Flash first (high quota), then Pro (low quota)
-                # We saw in your log that 'gemini-3.1-pro' definitely exists for you!
+                # 2. Priority List - Using 'latest' aliases is more robust
                 priority = [
                     "gemini-1.5-flash-latest", 
+                    "gemini-1.5-pro-latest",
                     "gemini-1.5-flash", 
-                    "gemini-1.5-flash-001", 
-                    "gemini-3.1-pro", 
                     "gemini-pro"
                 ]
                 
@@ -42,18 +40,16 @@ class GeminiService:
                         selected = match[0]
                         break
                 
-                # Final fallback: If we found NOTHING in the priority list, we just take the first one available
-                if not selected and avail:
-                    selected = avail[0]
-                
-                self.selected_model_name = selected or "gemini-1.5-flash"
+                # Final fallback: If nothing found, try standard gemini-pro
+                self.selected_model_name = selected or "gemini-1.5-flash-latest"
                 self.model = genai.GenerativeModel(self.selected_model_name)
                 self.has_key = True
             except Exception as e:
-                self.selected_model_name = "gemini-1.5-flash"
+                # Silently catch list_models failure and try default
+                self.selected_model_name = "gemini-1.5-flash-latest"
                 self.model = genai.GenerativeModel(self.selected_model_name)
                 self.has_key = True
-                self.debug_error = f"{str(e)} | Found on your account: {str(avail) if 'avail' in locals() else 'None'}"
+                self.debug_error = str(e)
         else:
             self.has_key = False
             
