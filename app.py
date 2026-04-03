@@ -102,6 +102,19 @@ else:
                 if st.button("Process & Override Core", type="primary", use_container_width=True):
                     try:
                         df_up = pd.read_csv(uploaded_file)
+                        
+                        # 1. Normalize headers (lowercase, strip whitespace)
+                        df_up.columns = df_up.columns.str.lower().str.strip()
+                        
+                        # 2. Map common real-world CSV aliases to our internal schema
+                        alias_map = {
+                            'date': 'timestamp', 'datetime': 'timestamp', 'time': 'timestamp',
+                            'visitors': 'users', 'customers': 'users', 'traffic': 'users',
+                            'sales': 'revenue', 'amount': 'revenue', 'total': 'revenue',
+                            'orders': 'transactions', 'purchases': 'transactions', 'qty': 'transactions'
+                        }
+                        df_up.rename(columns=alias_map, inplace=True)
+
                         # Ensure string timestamps parse gracefully
                         df_up['timestamp'] = pd.to_datetime(df_up['timestamp'])
                         
