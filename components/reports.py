@@ -37,7 +37,7 @@ def create_pdf(report_text, stats_df):
     
     # Table Header
     pdf.cell(40, 10, "Date", 1)
-    pdf.cell(50, 10, "Revenue ($)", 1)
+    pdf.cell(50, 10, "Revenue (₹)", 1)
     pdf.cell(40, 10, "Users", 1)
     pdf.cell(40, 10, "Conv. Rate", 1)
     pdf.ln()
@@ -74,7 +74,7 @@ def show_reports(df_historical):
                 alert_text = "\n".join([f"- {a['timestamp']}: {a['message']} ({a['level']})" for a in recent_alerts[:5]])
                 
                 summary_prompt = f"""
-                Summarize this 30-day performance: Total Revenue ${total_rev:,.0f}, Avg Conversion {avg_conv:.1f}%.
+                Summarize this 30-day performance: Total Revenue ₹{total_rev:,.0f}, Avg Conversion {avg_conv:.1f}%.
                 
                 Recent Anomalies from DB:
                 {alert_text}

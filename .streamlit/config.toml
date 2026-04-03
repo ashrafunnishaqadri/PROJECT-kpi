@@ -1,0 +1,9 @@
+[server]
+runOnSave = false
+
+[runner]
+fastRerun = false
+
+[development]
+# Ignore data folder updates from triggering reruns
+watchDirOptions = ["!**/data/**"]

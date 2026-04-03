@@ -113,3 +113,12 @@ class DatabaseManager:
             cursor = conn.cursor()
             cursor.execute("DELETE FROM kpi_data WHERE timestamp < ?", (cutoff,))
             conn.commit()
+
+    def truncate_kpi_data(self):
+        """Completely clears the KPI database for fresh real-world data uploads."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM kpi_data")
+            # Optionally reset autoincrement
+            cursor.execute("DELETE FROM sqlite_sequence WHERE name='kpi_data'")
+            conn.commit()

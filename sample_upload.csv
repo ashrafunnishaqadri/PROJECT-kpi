@@ -1,0 +1,6 @@
+timestamp,users,revenue,transactions,region,category
+2023-10-01 10:00:00,150,1200.50,15,North,Electronics
+2023-10-01 11:00:00,200,1800.75,22,South,Fashion
+2023-10-01 12:00:00,350,3100.00,45,East,Home
+2023-10-01 13:00:00,280,2400.25,32,West,Beauty
+2023-10-01 14:00:00,400,4200.00,55,Global,General

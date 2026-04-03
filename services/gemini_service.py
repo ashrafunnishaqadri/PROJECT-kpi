@@ -82,7 +82,7 @@ class GeminiService:
         if not self.has_key: 
             return self.local_engine.generate_kpi_summary(current_metrics, df_context)
             
-        prompt = f"KPI Brief: Revenue ${current_metrics['total_revenue']:.0f}, Users {current_metrics['total_users']}. Explain the trend in 2 lines."
+        prompt = f"KPI Brief: Revenue ₹{current_metrics['total_revenue']:.0f}, Users {current_metrics['total_users']}. Explain the trend in 2 lines."
         
         result = self._call_with_retry(self.model.generate_content, prompt)
         

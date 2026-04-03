@@ -23,7 +23,7 @@ class LocalInsightsEngine:
         top_region = df_context.groupby('region')['revenue'].sum().idxmax()
         
         # Build the natural language response
-        summary = f"✨ [LOCAL CORE] Performance analysis: Total revenue is ${rev:,.0f} and is {trend} ({growth:+.1f}%). "
+        summary = f"✨ [LOCAL CORE] Performance analysis: Total revenue is ₹{rev:,.0f} and is {trend} ({growth:+.1f}%). "
         summary += f"The {top_region} region is currently leading in sales. "
         summary += f"Conversion rate is steady at {conv:.1f}% of {users:,} active users. "
         
@@ -46,7 +46,7 @@ class LocalInsightsEngine:
         
         if "revenue" in query or "sales" in query:
             total = df_context['revenue'].sum()
-            return f"✨ [LOCAL CORE] Total revenue analyzed in this session is ${total:,.2f}."
+            return f"✨ [LOCAL CORE] Total revenue analyzed in this session is ₹{total:,.2f}."
             
         if "category" in query:
             top_cat = df_context.groupby('category')['revenue'].sum().idxmax()
