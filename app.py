@@ -115,8 +115,12 @@ else:
                         }
                         df_up.rename(columns=alias_map, inplace=True)
 
-                        # Ensure string timestamps parse gracefully
-                        df_up['timestamp'] = pd.to_datetime(df_up['timestamp'])
+                        # Ensure string timestamps parse gracefully (handling international day-first formats)
+                        try:
+                            df_up['timestamp'] = pd.to_datetime(df_up['timestamp'], format='mixed', dayfirst=True)
+                        except TypeError:
+                            # Fallback for older pandas versions
+                            df_up['timestamp'] = pd.to_datetime(df_up['timestamp'], dayfirst=True, errors='coerce')
                         
                         req_cols = ['timestamp', 'users', 'revenue', 'transactions']
                         missing = [col for col in req_cols if col not in df_up.columns]
